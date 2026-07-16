@@ -1,0 +1,13 @@
+[2026-07-16 19:09:57] Starting MySQL backup...
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+[2026-07-16 19:09:58] Backup success: /root/ops-practice/backups/mysql_full_20260716_190957.sql.gz
+[2026-07-16 19:09:58] Current backups:
+-rw-r--r-- 1 root root 869K Jul 16 19:09 /root/ops-practice/backups/mysql_full_20260716_190957.sql.gz
+[2026-07-16 19:09:58] Done.
+[2026-07-16 19:11:56] Starting MySQL backup...
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+[2026-07-16 19:11:57] Backup success: /root/ops-practice/backups/mysql_full_20260716_191156.sql.gz
+[2026-07-16 19:11:57] Current backups:
+-rw-r--r-- 1 root root 869K Jul 16 19:09 /root/ops-practice/backups/mysql_full_20260716_190957.sql.gz
+-rw-r--r-- 1 root root 869K Jul 16 19:11 /root/ops-practice/backups/mysql_full_20260716_191156.sql.gz
+[2026-07-16 19:11:57] Done.
