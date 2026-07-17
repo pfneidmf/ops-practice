@@ -11,3 +11,14 @@ mysqldump: [Warning] Using a password on the command line interface can be insec
 -rw-r--r-- 1 root root 869K Jul 16 19:09 /root/ops-practice/backups/mysql_full_20260716_190957.sql.gz
 -rw-r--r-- 1 root root 869K Jul 16 19:11 /root/ops-practice/backups/mysql_full_20260716_191156.sql.gz
 [2026-07-16 19:11:57] Done.
+[2026-07-17 02:00:01] Starting MySQL backup...
+mysqldump: [Warning] Using a password on the command line interface can be insecure.
+[2026-07-17 02:00:02] Backup success: /root/ops-practice/backups/mysql_full_20260717_020001.sql.gz
+[2026-07-17 02:00:02] Current backups:
+-rw-r--r-- 1 root root 869K Jul 16 19:09 /root/ops-practice/backups/mysql_full_20260716_190957.sql.gz
+-rw-r--r-- 1 root root 869K Jul 16 19:11 /root/ops-practice/backups/mysql_full_20260716_191156.sql.gz
+-rw-r--r-- 1 root root 869K Jul 17 02:00 /root/ops-practice/backups/mysql_full_20260717_020001.sql.gz
+[2026-07-17 02:00:02] Done.
+[2026-07-17 15:00:42] Starting Redis backup...
+[2026-07-17 15:00:44] Redis backup success: redis_rdb_20260717_150042.rdb.gz
+[2026-07-17 15:00:44] Done.

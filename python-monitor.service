@@ -1,0 +1,14 @@
+[Unit]
+Description=Python System Monitor HTTP Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/ops-practice
+ExecStart=/usr/bin/python3 /root/ops-practice/python_monitor.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
