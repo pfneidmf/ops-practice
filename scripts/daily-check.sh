@@ -4,7 +4,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
 echo "=========================================="
 echo "        每日运维巡检报告"
@@ -12,29 +12,30 @@ echo "        $(date '+%Y-%m-%d %H:%M:%S')"
 echo "=========================================="
 echo ""
 
-# 1. 系统基础（复习：top, free, df）
 echo -e "${YELLOW}[系统资源]${NC}"
 echo "CPU负载: $(uptime | awk -F'load average:' '{print $2}')"
 echo "内存使用:"
 free -h | grep "Mem:" | awk '{printf "  总计: %s | 已用: %s | 可用: %s\n", $2, $3, $7}'
 echo "磁盘使用:"
 df -h | grep -E "/$|/data" | awk '{printf "  %s: %s/%s (%s)\n", $6, $3, $2, $5}'
+
+DISK_USAGE=$(df -h / | tail -1 | awk '{print $5}' | tr -d '%')
+if [ "$DISK_USAGE" -gt 80 ]; then
+    echo -e "  ${RED}[警告] 磁盘使用率超过80%！当前：${DISK_USAGE}%${NC}"
+    # 发送邮件告警，|| true 保证即使邮件失败脚本也不中断
+    echo "服务器磁盘告警！当前使用率：${DISK_USAGE}%" | mail -s "【告警】磁盘不足" 1005840578@qq.com 2>/dev/null || true
+else
+    echo "  磁盘正常：${DISK_USAGE}%"
+fi
 echo ""
 
-# 2. Docker状态（复习：docker ps, docker stats概念）
 echo -e "${YELLOW}[Docker容器]${NC}"
 RUNNING=$(docker ps -q | wc -l)
 TOTAL=$(docker ps -aq | wc -l)
 echo "运行中: $RUNNING / 总计: $TOTAL"
-
-if [ "$RUNNING" -eq 0 ]; then
-    echo -e "  ${RED}警告：没有运行中的容器！${NC}"
-else
-    docker ps --format "  {{.Names}} | {{.Status}} | {{.Ports}}" 2>/dev/null || echo "  Docker未运行"
-fi
+docker ps --format "  {{.Names}} | {{.Status}} | {{.Ports}}" 2>/dev/null || echo "  Docker未运行"
 echo ""
 
-# 3. Nginx状态（复习：systemctl, curl, HTTP状态码）
 echo -e "${YELLOW}[Nginx服务]${NC}"
 NGINX_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost/ 2>/dev/null || echo "000")
 if [ "$NGINX_STATUS" = "200" ]; then
@@ -44,14 +45,23 @@ else
 fi
 echo ""
 
-# 4. 网络连接（复习：netstat, TCP连接状态）
 echo -e "${YELLOW}[网络连接]${NC}"
 echo "当前TCP连接数: $(netstat -an 2>/dev/null | grep ESTABLISHED | wc -l)"
 echo "监听端口:"
 ss -tlnp 2>/dev/null | grep LISTEN | awk '{print $4}' | sort -u | head -5 | sed 's/^/  /'
 echo ""
 
-# 5. 今日面试题（随机抽一道，强制复习）
+echo -e "${YELLOW}[Docker网络]${NC}"
+docker network inspect app-network --format '{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{println}}{{end}}' 2>/dev/null || echo "  app-network不存在"
+echo ""
+
+echo -e "${YELLOW}[今日访客/扫描统计]${NC}"
+SCAN_COUNT=$(docker logs my-nginx --since 24h 2>/dev/null | grep -E 'GET|POST|HEAD' | awk '{print $1}' | sort -u | wc -l)
+echo "  今日不同IP访问数: $SCAN_COUNT"
+echo "  最新5个访问来源:"
+docker logs my-nginx --since 24h 2>/dev/null | grep -E 'GET|POST|HEAD' | awk '{print $1}' | sort | uniq -c | sort -nr | head -5 | sed 's/^/    /'
+echo ""
+
 echo -e "${YELLOW}[今日面试题]${NC}"
 QUESTIONS=(
     "Linux中，如何查看当前目录下每个子目录的大小？（du -sh *）"

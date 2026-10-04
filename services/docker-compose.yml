@@ -1,0 +1,21 @@
+version: '3'
+services:
+  halo:
+    image: halohub/halo:2.19
+    ports: [8090:8090]
+    volumes: ["./halo:/root/.halo2"]
+    
+  prometheus:
+    image: prom/prometheus
+    ports: [9090:9090]
+    volumes: ["./prometheus.yml:/etc/prometheus/prometheus.yml"]
+
+  grafana:
+    image: grafana/grafana
+    ports: ["3000:3000"]
+    
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    ports: ["3001:3001"]
+    volumes: ["./uptime:/app/data"] 
+
